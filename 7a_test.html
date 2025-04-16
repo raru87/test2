@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ma'lumotlar Bazasi Testi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #e0f7fa, #e8eaf6);
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #1976d2;
+      margin-bottom: 30px;
+    }
+    .question {
+      background: #f1f8ff;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 12px;
+      border-left: 6px solid #1976d2;
+    }
+    .question h3 {
+      margin-top: 0;
+      color: #0d47a1;
+    }
+    label {
+      display: block;
+      margin: 6px 0;
+      font-size: 16px;
+    }
+    button {
+      display: block;
+      margin: 30px auto 10px;
+      padding: 12px 30px;
+      font-size: 16px;
+      background-color: #43a047;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+    .result {
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #00796b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ma'lumotlar Bazasi Testi (20 ta savol)</h1>
+    <form id="quizForm"></form>
+    <button onclick="checkAnswers()">Natijani tekshirish</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Ma'lumotlar bazasi yaratishdan asosiy maqsad nima?", a: "Ma'lumotlarni tizimli saqlash va boshqarish", options: ["Veb sahifa yaratish", "Dasturiy ta'minotni yangilash", "Ma'lumotlarni tizimli saqlash va boshqarish", "Internetga ulanish"] },
+      { q: "Qaysi tizim ma'lumotlarni boshqarish uchun ishlatiladi?", a: "DBMS", options: ["CMS", "DBMS", "OS", "HTML"] },
+      { q: "Ma'lumotlar bazasi foydalanuvchiga qanday imkoniyat yaratadi?", a: "Ma'lumotlarni izlash, tahrirlash va boshqarish", options: ["Foydalanuvchi interfeysini chizish", "Veb sahifa dizaynini yaratish", "Ma'lumotlarni izlash, tahrirlash va boshqarish", "Internet xizmatlarini sozlash"] },
+      { q: "Qanday hollarda ma'lumotlar bazasiga ehtiyoj tug‘iladi?", a: "Katta hajmdagi ma'lumotlar bilan ishlaganda", options: ["HTML sahifa yaratganda", "Foydalanuvchi interfeysi yaratganda", "Katta hajmdagi ma'lumotlar bilan ishlaganda", "Ranglar bilan ishlaganda"] },
+      { q: "Ma'lumotlar bazasi yaratuvchisining vazifasi nima?", a: "Ma'lumotlar strukturasi va bog‘lanishini loyihalash", options: ["Brauzer yaratish", "Ma'lumotlar strukturasi va bog‘lanishini loyihalash", "Internetni sozlash", "Kompyuter o‘rnatish"] },
+      { q: "Maydon (field) bu nima?", a: "Ma'lumotlar bazasidagi ustun", options: ["Qator", "Jadval", "Ma'lumotlar bazasidagi ustun", "Qator va ustun aralashmasi"] },
+      { q: "Qaysi biri maydon nomi bo‘lishi mumkin?", a: "ism", options: ["123", "ism", "@data", "*field"] },
+      { q: "Maydon nomi tanlashda nimalarga e'tibor beriladi?", a: "Ma'noli va aniq bo'lishi kerak", options: ["Uzun bo‘lishi kerak", "Noto‘g‘ri belgilar ishlatilishi kerak", "Ma'noli va aniq bo'lishi kerak", "Faqat sonlardan iborat bo‘lishi kerak"] },
+      { q: "Maydon turi nima uchun kerak?", a: "Ma'lumot turini aniqlash uchun", options: ["Parolni yashirish uchun", "Qator sonini aniqlash uchun", "Ma'lumot turini aniqlash uchun", "Veb sahifa yaratish uchun"] },
+      { q: "Maydon nomlari qanday yoziladi?", a: "Lotin harflari bilan, boshida raqam bo‘lmaydi", options: ["Raqam bilan boshlanishi kerak", "Faqat bosh harflar bilan", "Lotin harflari bilan, boshida raqam bo‘lmaydi", "Istalgancha belgilar bilan"] },
+      { q: "'VARCHAR' turi qanday ma'lumot uchun ishlatiladi?", a: "Matnli ma'lumotlar", options: ["Raqamlar", "Sanalar", "Matnli ma'lumotlar", "Rasm fayllar"] },
+      { q: "'INT' turi qanday ma'lumotlar uchun?", a: "Butun sonlar", options: ["Matnlar", "Sanalar", "Butun sonlar", "Haqiqiy sonlar"] },
+      { q: "'DATE' turi nima uchun kerak?", a: "Sana va vaqtni saqlash uchun", options: ["Ranglar", "Matn", "Sana va vaqtni saqlash uchun", "Raqamlar"] },
+      { q: "Qaysi tur o‘zgaruvchan uzunlikdagi matn uchun?", a: "VARCHAR", options: ["TEXT", "CHAR", "VARCHAR", "NUMBER"] },
+      { q: "Qaysi biri raqamli ma'lumot turi?", a: "INT", options: ["CHAR", "TEXT", "VARCHAR", "INT"] },
+      { q: "Ma'lumotlar bazasi jadvali bu nima?", a: "Ma'lumotlarni saqlovchi tuzilma", options: ["Fayl", "Matn", "Kod", "Ma'lumotlarni saqlovchi tuzilma"] },
+      { q: "Jadval yaratishda nima belgilanadi?", a: "Maydonlar va ularning turlari", options: ["Foydalanuvchi ismi", "Kod tili", "Maydonlar va ularning turlari", "Fayl yo‘li"] },
+      { q: "SQLda jadval yaratish uchun qaysi buyruq ishlatiladi?", a: "CREATE TABLE", options: ["NEW TABLE", "TABLE MAKE", "CREATE TABLE", "ADD TABLE"] },
+      { q: "Jadvaldagi har bir ustun nimani bildiradi?", a: "Alohida maydonni", options: ["Jadval nomini", "Satrni", "Butun jadvalni", "Alohida maydonni"] },
+      { q: "Jadvaldagi har bir satr nimani bildiradi?", a: "Ma'lumot yozuvini", options: ["Maydon turini", "Jadval nomini", "Ma'lumot yozuvini", "Kod blokini"] }
+    ];
+
+    const form = document.getElementById('quizForm');
+    questions.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'question';
+      div.innerHTML = `<h3>${index + 1}. ${item.q}</h3>` +
+        item.options.map(opt => `
+          <label><input type="radio" name="q${index}" value="${opt}"> ${opt}</label>`
+        ).join('');
+      form.appendChild(div);
+    });
+
+    function checkAnswers() {
+      let score = 0;
+      questions.forEach((item, index) => {
+        const answer = document.querySelector(`input[name="q${index}"]:checked`);
+        if (answer && answer.value === item.a) {
+          score++;
+        }
+      });
+      document.getElementById('result').textContent = `Siz ${score} ta to'g'ri javob berdingiz / 20.`;
+    }
+  </script>
+</body>
+</html>
